@@ -1,0 +1,14 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# The HA panel is a Herdr client attached to the same session that remote
+# clients see. ttyd listens on loopback only; nginx is the ingress front.
+export SHELL=/bin/bash
+cd "$(bashio::config 'working_directory')" 2>/dev/null || cd /homeassistant || exit 1
+
+exec ttyd \
+    --interface lo \
+    --port 7681 \
+    --writable \
+    --ping-interval 30 \
+    --client-option enableReconnect=true \
+    herdr

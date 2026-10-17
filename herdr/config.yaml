@@ -1,0 +1,55 @@
+---
+name: Herdr
+description: Run coding agents (Claude Code) inside Herdr on your Home Assistant box, and reach them from any Herdr client over SSH
+version: "0.1.0"
+slug: herdr
+init: false
+url: https://github.com/shaiu/ha-herdr
+
+# Prebuilt multi-arch images from CI. Remove this line to build locally.
+image: ghcr.io/shaiu/{arch}-addon-herdr
+
+arch:
+  - aarch64
+  - amd64
+
+# The HA sidebar panel attaches a Herdr client to the same session that your
+# remote Herdr clients see. nginx in front of it only accepts the ingress proxy.
+ingress: true
+panel_icon: mdi:sheep
+panel_title: Herdr
+
+# SSH is how a Herdr client on another machine reaches this add-on's server.
+# No host port by default: reach it with ProxyJump through the SSH add-on over
+# the internal hassio network (see DOCS.md). Map a port only if you need
+# direct access, and only with key authentication (the only kind allowed).
+ports:
+  22/tcp: null
+ports_description:
+  22/tcp: SSH for remote Herdr clients (key-only). Leave unset to use ProxyJump through the SSH add-on.
+
+options:
+  authorized_keys: []
+  auto_start_claude: true
+  working_directory: /homeassistant
+  enable_ha_mcp: true
+  ha_mcp_version: "7.11.0"
+schema:
+  authorized_keys:
+    - str
+  auto_start_claude: bool
+  working_directory: str
+  enable_ha_mcp: bool
+  ha_mcp_version: str
+
+map:
+  - homeassistant_config:rw
+  - all_addon_configs:rw
+  - share:rw
+
+# homeassistant_api: the /core/api proxy used by ha-mcp.
+# hassio_api with the default role: ha-mcp reads Supervisor info.
+hassio_api: true
+homeassistant_api: true
+
+startup: services

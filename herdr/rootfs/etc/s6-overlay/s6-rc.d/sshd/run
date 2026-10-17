@@ -1,0 +1,9 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+if [ ! -s /etc/ssh/authorized_keys_herdr ]; then
+    bashio::log.warning "No authorized_keys configured: SSH stays off, so remote Herdr clients cannot connect"
+    exec sleep infinity
+fi
+
+bashio::log.info "Starting sshd (key authentication only)"
+exec /usr/sbin/sshd -D -e

@@ -1,0 +1,60 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# Set up Claude Code once the Herdr server answers, then start Claude if no
+# Claude is running. A restarted server restores its own
+# workspaces, and the Claude integration resumes the Claude session there.
+# shellcheck source=/dev/null
+source /usr/local/lib/ha-herdr/claude.sh
+
+for _ in $(seq 1 60); do
+    herdr workspace list >/dev/null 2>&1 && break
+    sleep 1
+done
+if ! herdr workspace list >/dev/null 2>&1; then
+    bashio::log.error "Herdr server did not answer within 60 seconds; skipping bootstrap"
+    exit 0
+fi
+
+ensure_native_claude
+prune_claude_versions
+herdr integration install claude >/dev/null 2>&1 \
+    || bashio::log.warning "Could not install the Herdr Claude integration"
+if bashio::config.true 'enable_ha_mcp'; then
+    configure_ha_mcp "$(bashio::config 'ha_mcp_version')"
+fi
+
+if ! bashio::config.true 'auto_start_claude'; then
+    exit 0
+fi
+
+claude_running() {
+    herdr agent list | jq -e '[.result.agents[] | select(.agent == "claude")] | length > 0' >/dev/null
+}
+
+# A restarted server restores its workspaces and resumes Claude sessions on
+# its own. Give that a moment, so we never start a second Claude next to a
+# resumed one.
+for _ in $(seq 1 20); do
+    claude_running && break
+    sleep 1
+done
+if claude_running; then
+    bashio::log.info "Claude Code is already running in Herdr"
+    exit 0
+fi
+
+# Reuse an idle shell pane in the restored "claude" workspace when there is
+# one, so restarts do not pile up workspaces.
+workdir="$(bashio::config 'working_directory')"
+pane="$(herdr workspace list \
+    | jq -r '[.result.workspaces[] | select(.label == "claude") | .workspace_id][0] // empty' \
+    | while read -r ws; do
+        herdr pane list --workspace "${ws}" | jq -r '[.result.panes[] | select(.agent == null) | .pane_id][0] // empty'
+    done)"
+if [ -z "${pane}" ]; then
+    pane="$(herdr workspace create --cwd "${workdir}" --label claude --no-focus | jq -r '.result.root_pane.pane_id')"
+fi
+bashio::log.info "Starting Claude Code in ${workdir} (pane ${pane})"
+herdr agent start claude --kind claude --pane "${pane}" --timeout 120000 >/dev/null 2>&1 \
+    || bashio::log.warning "Claude did not report ready; open the Herdr panel to finish (for example, log in)"
+exit 0

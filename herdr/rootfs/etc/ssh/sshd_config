@@ -1,0 +1,22 @@
+# Key-only SSH for remote Herdr clients. Keys come from the add-on options.
+Port 22
+HostKey /data/ssh/ssh_host_ed25519_key
+AuthorizedKeysFile /etc/ssh/authorized_keys_herdr
+
+PermitRootLogin prohibit-password
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitEmptyPasswords no
+
+# Herdr's bridge runs over the SSH session itself; it needs no tunnels.
+# Agent forwarding stays available for git and signing inside panes.
+AllowAgentForwarding yes
+AllowTcpForwarding no
+AllowStreamLocalForwarding no
+X11Forwarding no
+PermitTunnel no
+
+ClientAliveInterval 30
+ClientAliveCountMax 4
+PrintMotd no
+Subsystem sftp internal-sftp

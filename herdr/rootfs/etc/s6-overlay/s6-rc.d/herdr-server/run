@@ -1,0 +1,12 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# The Herdr server owns every pane. Panes inherit this environment, which
+# includes SUPERVISOR_TOKEN for ha-mcp, whether they are opened from the HA
+# panel or from a remote Herdr client over SSH.
+export SHELL=/bin/bash
+
+workdir="$(bashio::config 'working_directory')"
+cd "${workdir}" 2>/dev/null || cd /homeassistant || exit 1
+
+bashio::log.info "Starting Herdr server $(herdr --version)"
+exec herdr server

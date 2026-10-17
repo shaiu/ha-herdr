@@ -1,0 +1,17 @@
+configuration:
+  authorized_keys:
+    name: Authorized SSH keys
+    description: Public keys allowed to log in over SSH, one per entry. With none, SSH stays off.
+  auto_start_claude:
+    name: Start Claude Code
+    description: On start, run Claude Code in Herdr if no Claude is running.
+  working_directory:
+    name: Working directory
+    description: Where Claude Code starts. /homeassistant is your Home Assistant configuration.
+  enable_ha_mcp:
+    name: Home Assistant MCP
+    description: Give Claude Code Home Assistant tools through ha-mcp.
+  ha_mcp_version:
+    name: ha-mcp version
+network:
+  22/tcp: SSH for remote Herdr clients (key-only). Leave unset to use the SSH add-on as a jump host.

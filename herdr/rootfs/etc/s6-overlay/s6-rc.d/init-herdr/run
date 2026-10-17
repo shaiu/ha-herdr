@@ -1,0 +1,20 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# Prepare persistent state, SSH host keys and authorized keys.
+set -e
+
+mkdir -p "${HOME}/.ssh" /data/ssh
+chmod 700 "${HOME}" "${HOME}/.ssh" /data/ssh
+
+# Host keys live in /data so remote clients never see a changed host key
+# after a restart or an add-on update.
+if [ ! -f /data/ssh/ssh_host_ed25519_key ]; then
+    bashio::log.info "Generating SSH host key"
+    ssh-keygen -q -t ed25519 -N '' -f /data/ssh/ssh_host_ed25519_key
+fi
+
+# The add-on options are the only source of authorized keys. The file is
+# rewritten on every start, so removing a key in the options revokes it.
+jq -r '.authorized_keys[]? // empty' /data/options.json > /etc/ssh/authorized_keys_herdr
+chmod 600 /etc/ssh/authorized_keys_herdr
+bashio::log.info "SSH authorized keys: $(grep -c . /etc/ssh/authorized_keys_herdr || true)"
