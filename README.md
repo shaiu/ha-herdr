@@ -21,6 +21,10 @@ The HA sidebar panel shows the same session in your browser.
 See [herdr/DOCS.md](herdr/DOCS.md) for connecting from Herdr on another
 computer, the options, and moving from the Claude Terminal add-on.
 
+Questions and feedback: the
+[community forum thread](https://community.home-assistant.io/t/herdr-add-on-run-claude-code-on-your-ha-box-and-reach-it-from-herdr-on-your-laptop/1029307).
+Bugs: [GitHub issues](https://github.com/shaiu/ha-herdr/issues).
+
 ## Status
 
 Early. Tested on a Raspberry Pi (aarch64) running Home Assistant OS. amd64
