@@ -27,7 +27,8 @@ Early. Tested on a Raspberry Pi (aarch64) running Home Assistant OS. amd64
 images are built but less tested.
 
 Herdr is a separate project by its authors, licensed under Apache-2.0. This
-repository only packages it as an add-on.
+repository only packages it as an add-on. The add-on icon is Herdr's own
+logo, from its repository.
 
 [repo-badge]: https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg
 [repo-link]: https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fshaiu%2Fha-herdr
