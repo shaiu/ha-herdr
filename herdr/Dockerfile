@@ -54,6 +54,7 @@ RUN case "$(apk --print-arch)" in \
 ENV HOME=/data/home \
     PATH=/data/home/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     IS_SANDBOX=1 \
+    MCP_TIMEOUT=60000 \
     npm_config_cache=/tmp/npm-cache
 RUN sed -i 's|^root:\([^:]*\):0:0:\([^:]*\):[^:]*:|root:\1:0:0:\2:/data/home:|' /etc/passwd \
     && sed -i 's|^root:!:|root:*:|' /etc/shadow
