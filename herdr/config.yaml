@@ -16,10 +16,8 @@ arch:
 # The HA sidebar panel attaches a Herdr client to the same session that your
 # remote Herdr clients see. nginx in front of it only accepts the ingress proxy.
 ingress: true
-ingress_port: 8099
 panel_icon: mdi:sheep
 panel_title: Herdr
-panel_admin: true
 
 # SSH is how a Herdr client on another machine reaches this add-on's server.
 # No host port by default: reach it with ProxyJump through the SSH add-on over
