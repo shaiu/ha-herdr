@@ -105,3 +105,8 @@ docker exec app_yyyyyyyy_herdr cp -a /data/home/.claude/projects/-config /data/h
 Then restart this add-on. Claude Terminal ran Claude in `/config`; this
 add-on uses `/homeassistant`, so the second command makes `claude --resume`
 find your earlier conversations.
+
+This carries over settings, skills, plugins and history, but usually not the
+login. Claude's refresh token is single-use, and the old add-on keeps using
+it, so the copy goes stale. Run `/login` once in the Claude pane here; the new
+login is stored in `/data` and survives restarts.
