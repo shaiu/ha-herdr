@@ -45,9 +45,16 @@ configure_ha_mcp() {
         --env 'HOMEASSISTANT_TOKEN=${SUPERVISOR_TOKEN}' \
         -- uvx --python 3.13 --index-strategy unsafe-best-match "ha-mcp@${version}" >/dev/null 2>&1; then
         bashio::log.info "ha-mcp ${version} registered for Claude Code"
-        # Warm the uv cache so Claude's first MCP start is fast.
-        (uvx --python 3.13 --index-strategy unsafe-best-match \
-            --from "ha-mcp@${version}" python -c "" >/dev/null 2>&1 || true) &
+        # Fill the uv cache before Claude starts. On a cold cache (first start,
+        # or a new ha_mcp_version) uv downloads Python and ha-mcp, which takes
+        # longer than Claude waits for an MCP server. Warming in the background
+        # raced Claude and lost.
+        if timeout 600 uvx --python 3.13 --index-strategy unsafe-best-match \
+            --from "ha-mcp@${version}" python -c "" >/dev/null 2>&1; then
+            bashio::log.info "ha-mcp ${version} is ready"
+        else
+            bashio::log.warning "Could not prepare ha-mcp ${version}; Claude may time out connecting to it"
+        fi
     else
         bashio::log.warning "Could not register ha-mcp with Claude Code"
     fi
