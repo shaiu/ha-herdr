@@ -19,14 +19,14 @@ ingress: true
 panel_icon: mdi:sheep
 panel_title: Herdr
 
-# SSH is how a Herdr client on another machine reaches this add-on's server.
-# No host port by default: reach it with ProxyJump through the SSH add-on over
+# SSH is how a Herdr client on another machine reaches this app's server.
+# No host port by default: reach it with ProxyCommand through the SSH app over
 # the internal hassio network (see DOCS.md). Map a port only if you need
 # direct access, and only with key authentication (the only kind allowed).
 ports:
   22/tcp: null
 ports_description:
-  22/tcp: SSH for remote Herdr clients (key-only). Leave unset to use ProxyJump through the SSH add-on.
+  22/tcp: SSH for remote Herdr clients (key-only). Leave unset to connect through the SSH app.
 
 options:
   authorized_keys: []

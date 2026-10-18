@@ -35,7 +35,7 @@ RUN case "$(apk --print-arch)" in \
     && echo "${sum}  /usr/local/bin/herdr" | sha256sum -c - \
     && chmod 0755 /usr/local/bin/herdr
 
-# Claude Code, bundled as the native musl binary. On first start the add-on
+# Claude Code, bundled as the native musl binary. On first start the app
 # also installs Claude's self-updating native copy into /data, which then
 # takes precedence on PATH; this bundled copy is the fallback.
 RUN case "$(apk --print-arch)" in \
