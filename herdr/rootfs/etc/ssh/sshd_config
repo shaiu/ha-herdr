@@ -1,4 +1,4 @@
-# Key-only SSH for remote Herdr clients. Keys come from the add-on options.
+# Key-only SSH for remote Herdr clients. Keys come from the app options.
 Port 22
 HostKey /data/ssh/ssh_host_ed25519_key
 AuthorizedKeysFile /etc/ssh/authorized_keys_herdr

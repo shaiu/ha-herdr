@@ -7,13 +7,13 @@ mkdir -p "${HOME}/.ssh" /data/ssh
 chmod 700 "${HOME}" "${HOME}/.ssh" /data/ssh
 
 # Host keys live in /data so remote clients never see a changed host key
-# after a restart or an add-on update.
+# after a restart or an app update.
 if [ ! -f /data/ssh/ssh_host_ed25519_key ]; then
     bashio::log.info "Generating SSH host key"
     ssh-keygen -q -t ed25519 -N '' -f /data/ssh/ssh_host_ed25519_key
 fi
 
-# The add-on options are the only source of authorized keys. The file is
+# The app options are the only source of authorized keys. The file is
 # rewritten on every start, so removing a key in the options revokes it.
 jq -r '.authorized_keys[]? // empty' /data/options.json > /etc/ssh/authorized_keys_herdr
 chmod 600 /etc/ssh/authorized_keys_herdr

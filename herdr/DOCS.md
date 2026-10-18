@@ -1,6 +1,6 @@
 # Herdr
 
-This add-on runs a [Herdr](https://herdr.dev) server on your Home Assistant
+This app runs a [Herdr](https://herdr.dev) server on your Home Assistant
 box, with Claude Code inside it. Herdr recognizes the agent, so any Herdr
 client can see whether Claude is working, idle, or waiting for an answer, and
 can switch to it like a local pane.
@@ -14,7 +14,7 @@ You can reach the same session in two ways:
 ## How it works
 
 ```
-Herdr on your computer ──ssh──▶ Herdr add-on
+Herdr on your computer ──ssh──▶ Herdr app
                                  ├─ sshd          key-only, from the options below
                                  ├─ herdr server  state in /data, survives restarts
                                  │    └─ pane: claude (cwd /homeassistant)
@@ -27,21 +27,21 @@ Assistant through the Supervisor API.
 
 ## First start
 
-1. Add your SSH public key to **authorized_keys** in the add-on
+1. Add your SSH public key to **authorized_keys** in the app
    configuration. One key per entry, for example
    `ssh-ed25519 AAAA... you@laptop`.
-2. Start the add-on and open the **Herdr** panel.
+2. Start the app and open the **Herdr** panel.
 3. In the Claude pane, finish Claude's first-run steps and log in.
 
 ## Connect from Herdr on another computer
 
-The add-on opens no port on your network by default. Reach it through the
+The app opens no port on your network by default. Reach it through the
 [Advanced SSH & Web Terminal](https://github.com/hassio-addons/addon-ssh)
-add-on, which pipes the connection over the internal hassio network.
+app, which pipes the connection over the internal hassio network.
 
-1. Find the add-on hostname: the **Hostname** on this add-on's info page (for
+1. Find the app hostname: the **Hostname** on this app's info page (for
    example `a1b2c3d4-herdr`, or `local-herdr` for a local install).
-2. Add this to `~/.ssh/config` on your computer. Replace the SSH add-on login
+2. Add this to `~/.ssh/config` on your computer. Replace the SSH app login
    and the hostname with yours:
 
    ```
@@ -60,7 +60,7 @@ add-on, which pipes the connection over the internal hassio network.
 
    Herdr finds the server that is already running. It installs nothing.
 
-If you do not use the SSH add-on, map port 22 in the add-on's network
+If you do not use the SSH app, map port 22 in the app's network
 settings to a host port instead, and connect to that port directly. Login is
 by key only, but the port is then open to your whole network.
 
@@ -79,20 +79,20 @@ by key only, but the port is then open to your whole network.
 Everything in `/data` survives restarts and updates: Claude's login, settings
 and history, Herdr's workspaces, and the SSH host key. Claude Code updates
 itself inside `/data`. Herdr is pinned in the image and updates with the
-add-on.
+app.
 
 ## Security
 
 - The panel is a root terminal. nginx only accepts the HA ingress proxy, so
-  other add-ons on the hassio network cannot reach it.
+  other apps on the hassio network cannot reach it.
 - SSH accepts public keys only. Password login is off and SSH tunnels are
   disabled.
 - Claude Code here can read and change your Home Assistant configuration, and
   ha-mcp can control your devices. Review what you approve.
 
-## Moving from the Claude Terminal add-on
+## Moving from the Claude Terminal app
 
-Copy Claude's state over, from the SSH add-on (it needs Docker access, so turn
+Copy Claude's state over, from the SSH app (it needs Docker access, so turn
 off its protection mode for this). Use your own container names from
 `docker ps` (they look like `app_<id>_claude_terminal`):
 
@@ -102,11 +102,11 @@ docker exec app_xxxxxxxx_claude_terminal tar -C /data/home -cf - .claude .claude
 docker exec app_yyyyyyyy_herdr cp -a /data/home/.claude/projects/-config /data/home/.claude/projects/-homeassistant
 ```
 
-Then restart this add-on. Claude Terminal ran Claude in `/config`; this
-add-on uses `/homeassistant`, so the second command makes `claude --resume`
+Then restart this app. Claude Terminal ran Claude in `/config`; this
+app uses `/homeassistant`, so the second command makes `claude --resume`
 find your earlier conversations.
 
 This carries over settings, skills, plugins and history, but usually not the
-login. Claude's refresh token is single-use, and the old add-on keeps using
+login. Claude's refresh token is single-use, and the old app keeps using
 it, so the copy goes stale. Run `/login` once in the Claude pane here; the new
 login is stored in `/data` and survives restarts.

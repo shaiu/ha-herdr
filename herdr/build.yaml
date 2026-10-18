@@ -3,7 +3,7 @@ build_from:
   amd64: ghcr.io/home-assistant/amd64-base:3.21
 
 labels:
-  org.opencontainers.image.title: "Home Assistant Add-on: Herdr"
+  org.opencontainers.image.title: "Home Assistant App: Herdr"
   org.opencontainers.image.description: "Coding agents inside Herdr on Home Assistant"
   org.opencontainers.image.source: "https://github.com/shaiu/ha-herdr"
   org.opencontainers.image.licenses: "MIT"

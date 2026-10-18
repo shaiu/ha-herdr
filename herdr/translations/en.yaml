@@ -14,4 +14,4 @@ configuration:
   ha_mcp_version:
     name: ha-mcp version
 network:
-  22/tcp: SSH for remote Herdr clients (key-only). Leave unset to use the SSH add-on as a jump host.
+  22/tcp: SSH for remote Herdr clients (key-only). Leave unset to use the SSH app as a jump host.
